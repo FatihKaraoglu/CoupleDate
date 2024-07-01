@@ -85,5 +85,12 @@ namespace CoupleDate.Client.Services.AuthService
             }
             return null;
         }
+
+        public async Task Logout()
+        {
+            await _localStorageService.RemoveItemAsync("authToken");
+            ((CustomAuthStateProvider)_authStateProvider).NotifyUserLogout();
+            _http.DefaultRequestHeaders.Authorization = null;
+        }
     }
 }

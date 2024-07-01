@@ -6,16 +6,15 @@
 
 <MudLayout>
     <MudAppBar Bottom="true" Class="d-flex flex-row justify-content-evenly">
-        <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" Style="color: var(--french-gray);"></MudIconButton>
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" aria-label="github" Style="color: var(--french-gray);"></MudIconButton>
-        <MudIconButton Icon="@Icons.Material.Filled.Favorite" aria-label="add to favorite" Style="color: var(--french-gray);"></MudIconButton>
+        <MudIconButton Icon="@Icons.Material.Filled.Favorite" aria-label="date-ideas" Style="color: var(--french-gray);" Href="/">
+        </MudIconButton>
+        <MudIconButton Icon="@Icons.Material.Filled.Person" aria-label="settings" Style="color: var(--french-gray);" Href="/settings">
+        </MudIconButton>
     </MudAppBar>
     <MudMainContent>
         @Body
     </MudMainContent>
 </MudLayout>
-
-
 
 @code {
     MudTheme MyCustomTheme = new MudTheme()
@@ -28,17 +27,12 @@
                 TextSecondary = "#71717a",
                 Primary = "#723CEAff",
                 PrimaryContrastText = "#C99BF8"
-                
-                
-                
-             
             },
             Typography = new Typography()
             {
                 Default = new Default()
                 {
                     FontFamily = new[] { "Jost", "Helvetica", "Arial", "sans-serif" },
-                    
                 }
             }
         };

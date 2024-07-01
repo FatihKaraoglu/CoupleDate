@@ -10,6 +10,7 @@ namespace CoupleDate.Client.Services.AuthService
         Task<bool> IsUserAuthenticated();
         Task<IEnumerable<string>> GetUserRoles();
         Task<string> GetTokenAsync();
+        Task Logout();
 
     }
 }

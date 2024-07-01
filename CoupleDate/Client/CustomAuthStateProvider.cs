@@ -73,6 +73,14 @@ namespace CoupleDate.Client
             }
             return Convert.FromBase64String(base64);
         }
+
+        public void NotifyUserLogout()
+        {
+            var identity = new ClaimsIdentity();
+            var user = new ClaimsPrincipal(identity);
+            var state = new AuthenticationState(user);
+            NotifyAuthenticationStateChanged(Task.FromResult(state));
+        }
     }
 
 }

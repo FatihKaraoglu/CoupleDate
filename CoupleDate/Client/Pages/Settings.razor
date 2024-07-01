@@ -1,0 +1,31 @@
+﻿@page "/settings"
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+@inject NavigationManager Navigation
+@inject IAuthService AuthService
+
+<MudAppBar Class="d-flex justify-content-center align-items-center">
+    <MudText>
+        Settings
+    </MudText>
+</MudAppBar>
+
+<MudContainer MaxWidth="MaxWidth.Medium">
+    <MudNavMenu>
+        <MudNavLink Href="/invitation-link"
+                    Class="mud-nav-link-custom"
+                    ActiveClass="mud-nav-link-custom-active">Invite your Partner</MudNavLink>
+        <MudNavLink Href="/accept-invitation"
+                    Class="mud-nav-link-custom"
+                    ActiveClass="mud-nav-link-custom-active">Accept Invitation</MudNavLink>
+        <MudButton OnClick="Logout">Logout</MudButton>
+    </MudNavMenu>
+</MudContainer>
+
+@code {
+    private async Task Logout()
+    {
+        await AuthService.Logout();
+        Navigation.NavigateTo("/");
+    }
+}

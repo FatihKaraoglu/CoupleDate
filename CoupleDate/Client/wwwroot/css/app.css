@@ -87,3 +87,16 @@ a, .btn-link {
 .content {
     padding: 20px;
 }
+
+.mud-nav-link-custom {
+    color: #ADAAB3 !important; /* Default text color */
+}
+
+    .mud-nav-link-custom:hover {
+        color: #C99BF8 !important; /* Hover text color */
+    }
+
+.mud-nav-link-custom-active {
+    color: #C99BF8 !important; /* Active text color */
+    background-color: transparent !important; /* Ensure no background change */
+}
