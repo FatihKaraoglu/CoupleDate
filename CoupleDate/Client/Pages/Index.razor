@@ -1,0 +1,15 @@
+﻿@page "/"
+@using MudBlazor
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<MudContainer MaxWidth="MaxWidth.Medium"> 
+    <AuthorizeView>
+        <Authorized>
+            <DateIdeas></DateIdeas>
+        </Authorized>
+        <NotAuthorized>
+            <UserLogin></UserLogin>
+        </NotAuthorized>
+    </AuthorizeView>
+    
+</MudContainer>

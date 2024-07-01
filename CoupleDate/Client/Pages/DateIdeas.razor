@@ -1,0 +1,142 @@
+﻿@page "/date-ideas"
+@inject NavigationManager NavigationManager
+@inject IDateDecisionService DateDecisionService
+@inject IJSRuntime JSRuntime
+@inject ILogger<DateIdeas> Logger
+@inject SignalRService SignalRService
+@implements IDisposable
+
+<h3>Date Ideas</h3>
+
+
+@if (dateIdeas == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="card-container">
+        @foreach (var card in dateIdeas)
+        {
+            <div @key="card.Id" @ref="card.ElementRef" id="card-@card.Id" class="card" style="@(card.IsVisible ? "" : "display:none;")">
+                <div class="content">
+                    <h4>@card.Title</h4>
+                    <p>@card.Description</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(MatchMessage))
+{
+    <div class="match-message">
+        <p>@MatchMessage</p>
+    </div>
+}
+
+@code {
+    private List<SwipeCardModel> dateIdeas;
+    private DotNetObjectReference<DateIdeas> _objRef;
+    private string MatchMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _objRef = DotNetObjectReference.Create(this);
+        SignalRService.OnMatchReceived += HandleMatchReceived;
+        await SignalRService.StartAsync();
+        await LoadDateIdeas();
+    }
+
+    private async Task LoadDateIdeas()
+    {
+        var response = await DateDecisionService.GetDateIdeasAsync();
+        if (response.Success)
+        {
+            dateIdeas = response.Data
+                .Select(d => new SwipeCardModel
+                    {
+                        Id = d.Id,
+                        Title = d.Title,
+                        Description = d.Description
+                    }).ToList();
+        }
+        else
+        {
+            Console.WriteLine($"Error loading date ideas: {response.Message}");
+        }
+
+        StateHasChanged(); // Ensure the component re-renders when data is available
+    }
+
+
+    private void HandleMatchReceived(string message)
+    {
+        Logger.LogInformation($"Match message received: {message}");
+        MatchMessage = message;
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (dateIdeas != null)
+        {
+            foreach (var card in dateIdeas)
+            {
+                if (card.ElementRef.Context != null && !card.IsInitialized)
+                {
+                    Console.WriteLine("Initializing swipe for card: " + card.Id);
+                    await JSRuntime.InvokeVoidAsync("initializeSwipe", card.ElementRef, _objRef);
+                    card.IsInitialized = true;
+                }
+            }
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnSwipeDetected(string direction)
+    {
+        Console.WriteLine($"OnSwipeDetected called with direction: {direction}");
+        if (dateIdeas.Any())
+        {
+            var swipedCard = dateIdeas.Last();
+            swipedCard.IsVisible = false;
+
+            var swipeRequest = new SwipeRequest
+                {
+                    DateId = swipedCard.Id,
+                    Liked = direction == "right"
+                };
+            Console.WriteLine($"Sending swipe request: DateId={swipeRequest.DateId}, Liked={swipeRequest.Liked}");
+
+            var response = await DateDecisionService.SwipeAsync(swipeRequest);
+
+            if (response.Success)
+            {
+                dateIdeas.Remove(swipedCard);
+                StateHasChanged();
+            }
+            else
+            {
+                // Handle error
+                Console.WriteLine("Swipe request failed: " + response.Message);
+            }
+        }
+    }
+
+    public void Dispose()
+    {
+        _objRef?.Dispose();
+        SignalRService.OnMatchReceived -= HandleMatchReceived;
+    }
+
+    public class SwipeCardModel
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public bool IsVisible { get; set; } = true;
+        public bool IsInitialized { get; set; } = false;
+        public ElementReference ElementRef { get; set; }
+    }
+}

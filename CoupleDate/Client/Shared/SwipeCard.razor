@@ -1,0 +1,76 @@
+﻿@page "/swipecard"
+@implements IDisposable
+
+<div class="card-stack">
+    @foreach (var card in Cards)
+    {
+        <div @key="card.Id" @ref="card.ElementRef" class="card" @onmousedown="(e) => HandleMouseDown(e, card)" style="@(card.IsVisible ? "" : "display:none;")">
+            <div class="content">
+                @card.Content
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    public class SwipeCardModel
+    {
+        public int Id { get; set; }
+        public RenderFragment Content { get; set; }
+        public ElementReference ElementRef { get; set; }
+        public bool IsVisible { get; set; } = true;
+    }
+
+    [Parameter]
+    public List<SwipeCardModel> Cards { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSwiped { get; set; }
+
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; }
+
+    private DotNetObjectReference<SwipeCard> _objRef;
+
+    protected override void OnInitialized()
+    {
+        _objRef = DotNetObjectReference.Create(this);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            foreach (var card in Cards)
+            {
+                await JSRuntime.InvokeVoidAsync("initializeSwipe", card.ElementRef, _objRef);
+            }
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnSwipeDetected(string direction)
+    {
+        if (Cards.Any())
+        {
+            var swipedCard = Cards.Last();
+            Console.WriteLine($"Card {swipedCard.Id} swiped {direction}");
+            await OnSwiped.InvokeAsync(direction);
+
+            // Set visibility to false instead of removing the card from DOM directly
+            swipedCard.IsVisible = false;
+            Cards.Remove(swipedCard);
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        _objRef?.Dispose();
+    }
+
+    private void HandleMouseDown(MouseEventArgs e, SwipeCardModel card)
+    {
+        // Logic for handling mouse down event if needed
+    }
+}

@@ -1,0 +1,35 @@
+﻿@page "/login"
+@inject IAuthService AuthService
+@inject ILocalStorageService LocalStorageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
+
+    <MudForm @ref="form" Class="ma-4">
+        <MudTextField T="string" Label="Email" @bind-Value="loginModel.Email" Required="true" RequiredError="Email is required!"
+                      Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" />
+        <MudTextField T="string" Label="Password" @bind-Value="loginModel.Password" HelperText="Choose a strong password" InputType="InputType.Password"
+                      Required="true" RequiredError="Password is required!" />
+    </MudForm>
+    <div class="d-flex flex-column gap-2 py-8">
+    <MudButton Variant="Variant.Filled" Style="background-color: var(--crimson); color: var(--mud-palette-primary-text)" DisableElevation="true" OnClick="@(()=>HandleLogin())">Sign In</MudButton>
+        @*<MudButton Variant="Variant.Outlined" Style="background-color: var(--mud-palette-white)" DisableElevation="true" OnClick="@(() => SetCurrentMode("Create Account"))">Create Account</MudButton>*@
+    </div>
+
+@code {
+    private UserLogin loginModel = new UserLogin();
+    public MudForm form { get; set; }
+
+    private async Task HandleLogin()
+    {
+        var result = await AuthService.Login(loginModel);
+        if (result.Success)
+        {
+            await LocalStorageService.SetItemAsync("authToken", result.Data);
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        }
+        else
+        {
+            Snackbar.Add(result.Message, Severity.Error);
+        }
+    }
+}

@@ -1,0 +1,39 @@
+﻿@page "/register"
+@inject IAuthService AuthService
+@inject ILocalStorageService LocalStorageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
+
+<MudPaper Style="background-color: var(--dark-bubble); color: var(--mud-palette-text-secondary);">
+    <MudForm @ref="form" Class="ma-4">
+        <MudTextField T="string" Label="Email" @bind-Value="registerModel.Email" Required="true" RequiredError="Email is required!"
+                      Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" />
+        <MudTextField T="string" Label="Password" @bind-Value="registerModel.Password" HelperText="Choose a strong password" InputType="InputType.Password"
+                      Required="true" RequiredError="Password is required!" />
+        <MudTextField T="string" Label="Repeat Password" @bind-Value="registerModel.ConfirmPassword" HelperText="Repeat the password" InputType="InputType.Password"
+                      Required="true" RequiredError="Password is required!" />
+    </MudForm>
+    <div class="d-flex flex-column gap-2 py-8 justify-center">
+        <MudButton Variant="Variant.Filled" Style="background-color: var(--mint); color: var(--mud-palette-primary-text)" DisableElevation="true" OnClick="@(()=>HandleRegistration())">Sign Up</MudButton>
+    </div>
+</MudPaper>
+
+@code {
+    private UserRegister registerModel = new UserRegister();
+    public MudForm form { get; set; }
+
+    private async Task HandleRegistration()
+    {
+        var result = await AuthService.Register(registerModel);
+        if (result.Success)
+        {
+            await LocalStorageService.SetItemAsync("authToken", result.Data);
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            Snackbar.Add("Registration successful!", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add(result.Message, Severity.Error);
+        }
+    }
+}
