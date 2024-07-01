@@ -1,0 +1,39 @@
+﻿@page "/invitation-link"
+@inject IInvitationService InvitationService
+@inject ISnackbar Snackbar
+@inject IJSRuntime JSRuntime
+
+<h3>Generate Invitation Link</h3>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateLink">Generate Link</MudButton>
+
+@if (!string.IsNullOrEmpty(InvitationLink))
+{
+    <div class="my-2">
+        <MudTextField T="string" @bind-Value="InvitationLink" ReadOnly="true" />
+        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="CopyToClipboard">Copy</MudButton>
+    </div>
+}
+
+@code {
+    private string InvitationLink;
+
+    private async Task GenerateLink()
+    {
+        var response = await InvitationService.GenerateInvitationLinkAsync();
+        if (response.Success)
+        {
+            InvitationLink = response.Data;
+        }
+        else
+        {
+            Snackbar.Add("Failed to generate link: " + response.Message, Severity.Error);
+        }
+    }
+
+    private async Task CopyToClipboard()
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", InvitationLink);
+        Snackbar.Add("Link copied to clipboard", Severity.Success);
+    }
+}

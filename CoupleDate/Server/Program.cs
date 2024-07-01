@@ -1,14 +1,13 @@
-using CoupleDate.Server.Data.DataContext;
-using CoupleDate.Server.Hub;
-using CoupleDate.Server.Services.AuthService;
-using CoupleDate.Server.Services.DateIdeaService;
-using CoupleDate.Server.Services.MatchService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using CoupleDate.Server.Data.DataContext;
+using CoupleDate.Server.Hub;
+using CoupleDate.Server.Services.DateIdeaService;
+using CoupleDate.Server.Services.MatchService;
+using Microsoft.EntityFrameworkCore;
+using CoupleDate.Server.Services.AuthService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +36,27 @@ builder.Services.AddSignalR();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoupleDate API", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please insert JWT with Bearer into field",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+    {
+        new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = "Bearer"
+            }
+        },
+        new string[] { }
+    }});
 });
 
 builder.Services.AddScoped<IDateIdeaService, DateIdeaService>();

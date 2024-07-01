@@ -116,7 +116,16 @@ namespace CoupleDate.Server.Services.AuthService
             return new ServiceResponse<bool> { Data = true, Message = "Password has been changed", Success = true };
         }
 
-        public int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        public int GetUserId()
+        {
+            var userIdClaim = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                throw new InvalidOperationException("User ID claim is missing.");
+            }
+            return int.Parse(userIdClaim);
+        }
+
 
         public string GetUserEmail() => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
 

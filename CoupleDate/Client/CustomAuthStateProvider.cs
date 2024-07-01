@@ -19,7 +19,7 @@ namespace CoupleDate.Client
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            string authToken = await _localStorageService.GetItemAsStringAsync("authToken");
+            var authToken = await _localStorageService.GetItemAsync<string>("authToken");
 
             var identity = new ClaimsIdentity();
             _http.DefaultRequestHeaders.Authorization = null;
@@ -47,6 +47,23 @@ namespace CoupleDate.Client
             return state;
         }
 
+        public void NotifyUserAuthentication(string token)
+        {
+            var identity = new ClaimsIdentity(ParseClaimsFromJwt(token), "jwt");
+            var user = new ClaimsPrincipal(identity);
+            var state = new AuthenticationState(user);
+            NotifyAuthenticationStateChanged(Task.FromResult(state));
+        }
+
+        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+        {
+            var payload = jwt.Split('.')[1];
+            var jsonBytes = ParseBase64WithoutPadding(payload);
+            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+            var claims = keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())).ToList();
+            return claims;
+        }
+
         private byte[] ParseBase64WithoutPadding(string base64)
         {
             switch (base64.Length % 4)
@@ -56,31 +73,6 @@ namespace CoupleDate.Client
             }
             return Convert.FromBase64String(base64);
         }
-
-        private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
-        {
-            var payload = jwt.Split('.')[1];
-            var jsonBytes = ParseBase64WithoutPadding(payload);
-            var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-
-            var claims = new List<Claim>();
-            foreach (var kvp in keyValuePairs)
-            {
-                if (kvp.Key == ClaimTypes.Role && kvp.Value is JsonElement roleElement && roleElement.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var role in roleElement.EnumerateArray())
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, role.GetString()));
-                    }
-                }
-                else
-                {
-                    claims.Add(new Claim(kvp.Key, kvp.Value.ToString()));
-                }
-            }
-
-            return claims;
-        }
-
     }
+
 }

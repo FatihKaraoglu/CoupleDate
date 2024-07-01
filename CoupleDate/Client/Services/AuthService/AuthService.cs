@@ -34,6 +34,13 @@ namespace CoupleDate.Client.Services.AuthService
         {
             var result = await _http.PostAsJsonAsync("api/auth/login", request);
             var response = await result.Content.ReadFromJsonAsync<ServiceResponse<string>>();
+
+            if (response.Success)
+            {
+                await _localStorageService.SetItemAsync("authToken", response.Data);
+                ((CustomAuthStateProvider)_authStateProvider).NotifyUserAuthentication(response.Data);
+            }
+
             return response;
         }
 
@@ -41,6 +48,12 @@ namespace CoupleDate.Client.Services.AuthService
         {
             var result = await _http.PostAsJsonAsync("api/auth/register", register);
             var response = await result.Content.ReadFromJsonAsync<ServiceResponse<int>>();
+
+            if (response.Success)
+            {
+                var loginRequest = new UserLogin { Email = register.Email, Password = register.Password };
+                await Login(loginRequest);
+            }
 
             return response;
         }

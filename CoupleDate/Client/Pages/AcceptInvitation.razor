@@ -1,0 +1,52 @@
+﻿@page "/accept-invitation"
+@inject NavigationManager NavigationManager
+@inject IInvitationService InvitationService
+@inject ISnackbar Snackbar
+
+<h3>Accept Invitation</h3>
+
+<div>
+    @if (isLoading)
+    {
+        <p>Loading...</p>
+    }
+    else if (!string.IsNullOrEmpty(message))
+    {
+        <p>@message</p>
+    }
+    else
+    {
+        <p>Processing invitation...</p>
+    }
+</div>
+
+@code {
+    private bool isLoading = true;
+    private string message = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var token = query.Get("token");
+
+        if (string.IsNullOrEmpty(token))
+        {
+            message = "Invalid invitation link.";
+            isLoading = false;
+            return;
+        }
+
+        var response = await InvitationService.AcceptInvitationAsync(token);
+        if (response.Success)
+        {
+            message = response.Data;
+        }
+        else
+        {
+            message = response.Message;
+        }
+
+        isLoading = false;
+    }
+}
