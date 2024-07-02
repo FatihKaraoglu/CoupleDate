@@ -1,39 +1,82 @@
-﻿@page "/invitation-link"
+﻿@page "/invitation"
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+@inject NavigationManager Navigation
 @inject IInvitationService InvitationService
+@inject IAuthService AuthService
 @inject ISnackbar Snackbar
 @inject IJSRuntime JSRuntime
 
-<h3>Generate Invitation Link</h3>
+<MudAppBar Class="d-flex justify-content-center align-items-center">
+    <MudText Typo="Typo.h6">Invite Your Partner</MudText>
+</MudAppBar>
 
-<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateLink">Generate Link</MudButton>
-
-@if (!string.IsNullOrEmpty(InvitationLink))
-{
-    <div class="my-2">
-        <MudTextField T="string" @bind-Value="InvitationLink" ReadOnly="true" />
-        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="CopyToClipboard">Copy</MudButton>
-    </div>
-}
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-4">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GenerateLink">Invite Your Partner</MudButton>
+    <MudDialog @bind-Open="_open">
+        <DialogContent>
+            <MudText Typo="Typo.h6">Share the following link with your partner:</MudText>
+            <MudText Typo="Typo.subtitle1">@invitationLink</MudText>
+            <MudButton Variant="Variant.Outlined" OnClick="CopyLink">Copy Link</MudButton>
+            <!-- Share options -->
+            <div class="share-options mt-2">
+                <MudIconButton Icon="@Icons.Material.Filled.Message" OnClick="ShareViaWhatsApp" />
+                <MudIconButton Icon="@Icons.Material.Filled.Person" OnClick="ShareViaFacebook" />
+                <MudIconButton Icon="@Icons.Material.Filled.Email" OnClick="ShareViaEmail" />
+                <!-- Add more share options as needed -->
+            </div>
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="CloseDialog">Close</MudButton>
+        </DialogActions>
+    </MudDialog>
+</MudContainer>
 
 @code {
-    private string InvitationLink;
+    private bool _open;
+    private string invitationLink;
 
     private async Task GenerateLink()
     {
+        Console.WriteLine("Generating link...");
         var response = await InvitationService.GenerateInvitationLinkAsync();
         if (response.Success)
         {
-            InvitationLink = response.Data;
+            invitationLink = response.Data;
+            Console.WriteLine("Link generated: " + invitationLink);
+            _open = true;
         }
         else
         {
-            Snackbar.Add("Failed to generate link: " + response.Message, Severity.Error);
+            Snackbar.Add(response.Message, Severity.Error);
+            Console.WriteLine("Error generating link: " + response.Message);
         }
     }
 
-    private async Task CopyToClipboard()
+    private async Task CopyLink()
     {
-        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", InvitationLink);
-        Snackbar.Add("Link copied to clipboard", Severity.Success);
+        await JSRuntime.InvokeVoidAsync("copyToClipboard", invitationLink);
+        Snackbar.Add("Link copied to clipboard!", Severity.Success);
+        Console.WriteLine("Link copied to clipboard");
     }
+
+    private void ShareViaWhatsApp()
+    {
+        var url = $"https://wa.me/?text={invitationLink}";
+        Navigation.NavigateTo(url, true);
+    }
+
+    private void ShareViaFacebook()
+    {
+        var url = $"https://www.facebook.com/sharer/sharer.php?u={invitationLink}";
+        Navigation.NavigateTo(url, true);
+    }
+
+    private void ShareViaEmail()
+    {
+        var mailto = $"mailto:?subject=Invitation&body=Join me here: {invitationLink}";
+        Navigation.NavigateTo(mailto, true);
+    }
+
+    private void CloseDialog() => _open = false;
 }
