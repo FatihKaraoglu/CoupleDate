@@ -1,20 +1,67 @@
 ﻿@page "/"
 @using MudBlazor
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IInvitationService InvitationService
+@inject IDialogService DialogService
 
 <MudAppBar Class="d-flex justify-content-center align-items-center">
     <MudText>
         CoupleSwipe
     </MudText>
 </MudAppBar>
-<MudContainer MaxWidth="MaxWidth.Medium"> 
+<MudContainer MaxWidth="MaxWidth.Medium">
     <AuthorizeView>
         <Authorized>
-            <DateIdeas></DateIdeas>
+            @if (isInCouple == null)
+            {
+                <MudProgressCircular Indeterminate="true" />
+            }
+            else if (isInCouple == true)
+            {
+                <DateIdeas></DateIdeas>
+            }
+            else
+            {
+                <MudText Typo="Typo.h6">You are not part of a couple yet. Invite your partner to get started!</MudText>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenInvitePartnerDialog">Invite Your Partner</MudButton>
+            }
         </Authorized>
         <NotAuthorized>
             <UserLogin></UserLogin>
         </NotAuthorized>
     </AuthorizeView>
-    
 </MudContainer>
+
+@code {
+    private bool? isInCouple;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var response = await InvitationService.IsUserInCouple();
+            if (response.Success)
+            {
+                isInCouple = response.Data;
+            }
+            else
+            {
+                // Handle the case where the response was not successful
+                isInCouple = false;
+            }
+        }
+    }
+
+    private async Task OpenInvitePartnerDialog()
+    {
+        var result = await InvitationService.GenerateInvitationLinkAsync();
+        if (result.Success)
+        {
+            var options = new DialogOptions { CloseOnEscapeKey = true };
+            DialogService.Show<ShareDialog>("Share Invitation Link", new DialogParameters { { "invitationLink", result.Data } }, options);
+        }
+    }
+}

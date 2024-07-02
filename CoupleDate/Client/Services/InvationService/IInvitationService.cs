@@ -6,5 +6,7 @@ namespace CoupleDate.Client.Services.InvationService
     {
         Task<ServiceResponse<string>> GenerateInvitationLinkAsync();
         Task<ServiceResponse<string>> AcceptInvitationAsync(string token);
+        Task<ServiceResponse<bool>> LeaveCoupleAsync();
+        Task<ServiceResponse<bool>> IsUserInCouple();
     }
 }

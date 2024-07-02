@@ -38,6 +38,18 @@ namespace CoupleDate.Client.Services.InvationService
             var response = await _httpClient.GetAsync($"api/invitation/acceptinvitation?token={token}");
             return await response.Content.ReadFromJsonAsync<ServiceResponse<string>>();
         }
+
+        public async Task<ServiceResponse<bool>> LeaveCoupleAsync()
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/invitation/leavecouple", new { });
+            return await response.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+        }
+
+        public async Task<ServiceResponse<bool>> IsUserInCouple()
+        {
+            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<bool>>("api/invitation/isUserInCouple");
+            return response;
+        }
     }
 
 

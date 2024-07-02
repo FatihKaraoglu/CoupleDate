@@ -1,0 +1,38 @@
+﻿@inject IAuthService AuthService
+@inject IInvitationService InvitationService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        Leave Couple
+    </TitleContent>
+    <DialogContent>
+        <MudText Typo="Typo.subtitle1">Are you sure you want to leave your current couple?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="ConfirmLeave">Yes</MudButton>
+        <MudButton Color="Color.Secondary" OnClick="Cancel">No</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+
+    private async Task ConfirmLeave()
+    {
+        // var response = await InvitationService.LeaveCoupleAsync(); // Implement this method in your service
+        // var response 
+        // if (response.Success)
+        // {
+        //     Snackbar.Add("You have successfully left the couple.", Severity.Success);
+        //     MudDialog.Close(DialogResult.Ok(true));
+        // }
+        // else
+        // {
+        //     Snackbar.Add(response.Message, Severity.Error);
+        // }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}
+

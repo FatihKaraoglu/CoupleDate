@@ -1,0 +1,54 @@
+﻿@inject IJSRuntime JSRuntime
+@inject ISnackbar Snackbar
+@inject NavigationManager Navigation
+
+<MudDialog>
+    <TitleContent>
+        Share Invitation Link
+    </TitleContent>
+    <DialogContent>
+        <MudText Typo="Typo.subtitle1">@invitationLink</MudText>
+        <MudButton Variant="Variant.Outlined" OnClick="CopyLink">Copy Link</MudButton>
+        <div class="share-options mt-2">
+            <MudIconButton Icon="@Icons.Material.Filled.Message" OnClick="@(() => ShareViaWhatsApp(invitationLink))" />
+            <MudIconButton Icon="@Icons.Material.Filled.Backpack" OnClick="@(() => ShareViaTwitter(invitationLink))" />
+            <MudIconButton Icon="@Icons.Material.Filled.Camera" OnClick="@(() => ShareViaSnapchat(invitationLink))" />
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Submit">Submit</MudButton>
+        <MudButton Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string invitationLink { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task CopyLink()
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", invitationLink);
+        Snackbar.Add("Link copied to clipboard!", Severity.Success);
+    }
+
+    private void ShareViaWhatsApp(string url)
+    {
+        var shareUrl = $"https://wa.me/?text={Uri.EscapeDataString("Check this out: " + url)}";
+        Navigation.NavigateTo(shareUrl, true);
+    }
+
+    private void ShareViaTwitter(string url)
+    {
+        var shareUrl = $"https://twitter.com/intent/tweet?url={Uri.EscapeDataString(url)}&text={Uri.EscapeDataString("Join me here!")}";
+        Navigation.NavigateTo(shareUrl, true);
+    }
+
+    private void ShareViaSnapchat(string url)
+    {
+        var shareUrl = $"https://www.snapchat.com/add?shareUrl={Uri.EscapeDataString(url)}";
+        Navigation.NavigateTo(shareUrl, true);
+    }
+}

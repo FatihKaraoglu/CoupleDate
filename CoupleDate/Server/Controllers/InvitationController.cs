@@ -82,6 +82,36 @@ namespace CoupleDate.Server.Controllers
                 return BadRequest(new ServiceResponse<string> { Success = false, Message = ex.Message });
             }
         }
+
+        [HttpPost("leavecouple")]
+        public async Task<IActionResult> LeaveCouple()
+        {
+            var userId = _authService.GetUserId();
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound(new ServiceResponse<bool> { Success = false, Message = "User not found." });
+            }
+
+            user.CoupleId = null;
+            await _context.SaveChangesAsync();
+
+            return Ok(new ServiceResponse<bool> { Data = true, Success = true, Message = "You have left the couple." });
+        }
+
+        [HttpGet("isUserInCouple")]
+        public async Task<IActionResult> IsUserInCouple()
+        {
+            var userId = _authService.GetUserId();
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+                return NotFound(new ServiceResponse<bool> { Success = false, Message = "User not found." });
+
+            return Ok(new ServiceResponse<bool> { Data = user.CoupleId.HasValue, Success = true });
+        }
+
     }
 
 
