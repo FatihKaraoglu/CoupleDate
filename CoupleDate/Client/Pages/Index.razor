@@ -4,17 +4,16 @@
 @inject IInvitationService InvitationService
 @inject IDialogService DialogService
 
-<MudAppBar Class="d-flex justify-content-center align-items-center">
-    <MudText>
-        CoupleSwipe
-    </MudText>
-</MudAppBar>
+
 <MudContainer MaxWidth="MaxWidth.Medium">
     <AuthorizeView>
         <Authorized>
             @if (isInCouple == null)
             {
-                <MudProgressCircular Indeterminate="true" />
+                <MudContainer Class="d-flex justify-content-center align-content-center" MaxWidth="MaxWidth.Medium"> 
+                    <MudProgressCircular Indeterminate="true" />
+                </MudContainer>
+                
             }
             else if (isInCouple == true)
             {

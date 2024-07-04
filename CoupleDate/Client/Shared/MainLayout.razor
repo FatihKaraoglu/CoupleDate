@@ -4,6 +4,11 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
+<MudAppBar Class="d-flex justify-content-center align-items-center" Elevation="0" Style="background-color: #161616">
+    <MudText>
+        CoupleSwipe
+    </MudText>
+</MudAppBar>
 <MudLayout>
     <MudAppBar Bottom="true" Class="d-flex flex-row justify-content-evenly">
         <MudIconButton Icon="@Icons.Material.Filled.Favorite" aria-label="date-ideas" Style="color: var(--french-gray);" Href="/">
@@ -21,12 +26,11 @@
         {
             Palette = new Palette()
             {
-                Background = "#1C1C1E", // Primary purple for the background
-                AppbarBackground = "#333333", // Dark background color for the app bar
-                TextPrimary = "#ADAAB3", // White color for the text and icons
-                TextSecondary = "#71717a",
-                Primary = "#723CEAff",
-                PrimaryContrastText = "#C99BF8"
+                Background = "#161616", 
+                
+                AppbarBackground = "#1D1E20", 
+                TextPrimary = "#FFFFFF", // White color for the text and icons
+                TextSecondary = "#515151",
             },
             Typography = new Typography()
             {
