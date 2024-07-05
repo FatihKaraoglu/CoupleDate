@@ -1,0 +1,31 @@
+﻿@inject NavigationManager NavigationMangager
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column justify-content-center align-content-space-around gap-15 h-100 vh-100">
+    <div class="mb-10">
+        <MudText Typo="Typo.h5" Align="Align.Center" >
+            CoupleSwipe
+        </MudText>
+        <MudText Typo="Typo.subtitle1" Align="Align.Center">
+            Start Swiping with your Partner and find your next Date!
+        </MudText>
+    </div>
+    
+    <div class="d-flex flex-column gap-2 justify-content-center align-content-center"> 
+        <MudButton Style="background-color: white;" OnClick="() => GoToSignUp()">
+            <span style="color: black">
+                Sign Up
+            </span>
+        </MudButton>
+        <MudLink Class="text-align-center" Typo="Typo.subtitle2" Style="color: white" Href="/Login">
+            Already With CoupleSwipe? Login!
+        </MudLink>
+    </div>
+   
+</MudContainer>
+
+@code {
+    private void GoToSignUp()
+    {
+        this.NavigationMangager.NavigateTo("/SignUp");
+    }
+}

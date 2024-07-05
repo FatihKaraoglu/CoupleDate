@@ -4,21 +4,33 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudAppBar Class="d-flex justify-content-center align-items-center" Elevation="0" Style="background-color: #161616">
-    <MudText>
-        CoupleSwipe
-    </MudText>
-</MudAppBar>
+
+
+
 <MudLayout>
-    <MudAppBar Bottom="true" Class="d-flex flex-row justify-content-evenly">
-        <MudIconButton Icon="@Icons.Material.Filled.Favorite" aria-label="date-ideas" Style="color: var(--french-gray);" Href="/">
-        </MudIconButton>
-        <MudIconButton Icon="@Icons.Material.Filled.Person" aria-label="settings" Style="color: var(--french-gray);" Href="/settings">
-        </MudIconButton>
-    </MudAppBar>
-    <MudMainContent>
-        @Body
-    </MudMainContent>
+    <AuthorizeView>
+        <Authorized>
+            <MudAppBar Class="d-flex justify-content-center align-items-center" Elevation="0" Style="background-color: #161616">
+                <MudText>
+                    CoupleSwipe
+                </MudText>
+            </MudAppBar>
+            <MudAppBar Bottom="true" Class="d-flex flex-row justify-content-evenly">
+                <MudIconButton Icon="@Icons.Material.Filled.Favorite" aria-label="date-ideas" Style="color: var(--french-gray);" Href="/">
+                </MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Person" aria-label="settings" Style="color: var(--french-gray);" Href="/settings">
+                </MudIconButton>
+            </MudAppBar>
+            <MudMainContent>
+                @Body
+            </MudMainContent>
+        </Authorized>
+        <NotAuthorized>
+            <CoupleDate.Client.Pages.StartPage>
+
+            </CoupleDate.Client.Pages.StartPage>
+        </NotAuthorized>
+    </AuthorizeView>
 </MudLayout>
 
 @code {

@@ -99,3 +99,7 @@ a, .btn-link {
     color: #C99BF8 !important; /* Active text color */
     background-color: transparent !important; /* Ensure no background change */
 }
+
+.text-align-center{
+    text-align: center;
+}
