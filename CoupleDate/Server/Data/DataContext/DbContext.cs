@@ -27,9 +27,9 @@ namespace CoupleDate.Server.Data.DataContext
 
             // Seed data
             modelBuilder.Entity<DateIdea>().HasData(
-                new DateIdea { Id = 1, Title = "Dinner at a fancy restaurant", Description = "Enjoy a fine dining experience.", ImageUrl="card.jpg" },
-                new DateIdea { Id = 2, Title = "Hiking trip", Description = "Explore nature on a hiking trail.", ImageUrl = "card.jpg" },
-                new DateIdea { Id = 3, Title = "Movie night", Description = "Watch the latest blockbuster.", ImageUrl = "card.jpg" }
+                new DateIdea { Id = 1, Title = "Dinner at a fancy restaurant", Description = "Enjoy a fine dining experience.", ImageUrl="dinner.jpg" },
+                new DateIdea { Id = 2, Title = "Hiking trip", Description = "Explore nature on a hiking trail.", ImageUrl = "hiking.jpg" },
+                new DateIdea { Id = 3, Title = "Movie night", Description = "Watch the latest blockbuster.", ImageUrl = "movie.jpg" }
             );
         }
     }
