@@ -1,16 +1,40 @@
-﻿<MudPaper Style="background-color: var(--dark-bubble)">
-    <MudTabs Centered="true" Color="@Color.Primary">
-        <MudTabPanel Text="Login">
-            <Login/>
-        </MudTabPanel>
-        <MudTabPanel Text="Register">
-            <Register />
-        </MudTabPanel>
-    </MudTabs>
+﻿@page "/login"
+@page "/signup"
+@layout StartLayout
+@inject NavigationManager Navigation
 
-</MudPaper>
-
+<MudTabs Centered="true"  @bind-ActivePanelIndex="@activeTabIndex">
+    <MudTabPanel Text="Login">
+        <Login />
+    </MudTabPanel>
+    <MudTabPanel Text="Sign Up">
+        <Register />
+    </MudTabPanel>
+</MudTabs>
 
 @code {
+    private int activeTabIndex;
 
+    protected override void OnInitialized()
+    {
+        SetActiveTab();
+    }
+
+    protected override void OnParametersSet()
+    {
+        SetActiveTab();
+    }
+
+    private void SetActiveTab()
+    {
+        var currentUri = Navigation.Uri;
+        if (currentUri.EndsWith("/login"))
+        {
+            activeTabIndex = 0;
+        }
+        else if (currentUri.EndsWith("/signup"))
+        {
+            activeTabIndex = 1;
+        }
+    }
 }

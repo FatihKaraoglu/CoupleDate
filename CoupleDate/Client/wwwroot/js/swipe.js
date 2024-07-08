@@ -1,79 +1,58 @@
 window.initializeSwipe = (card, dotNetHelper) => {
-    if (card.getAttribute('data-init') === 'true') {
-        console.log("Swipe already initialized for", card.id);
-        return; // Exit if the element is already initialized
-    }
+    let startX, startY, isDragging = false;
 
-    console.log("initializeSwipe called for", card.id);
-    card.setAttribute('data-init', 'true'); // Mark as initialized
-
-    let startX;
-    let currentX;
-    let offsetX = 0;
-    const threshold = 150;
-    const maxTranslateX = 100; // Maximum translation distance in pixels
-    const maxRotate = 15; // Maximum rotation in degrees
-    let swipeProcessed = false; // Flag to ensure single processing
-
-    const onMove = (event) => {
-        if (swipeProcessed) return; // Prevent further processing if already processed
-
-        if (event.type === 'mousemove') {
-            currentX = event.clientX;
-        } else if (event.type === 'touchmove') {
-            currentX = event.touches[0].clientX;
-        }
-
-        offsetX = currentX - startX;
-
-        if (card) {
-            // Limit translation distance
-            let translateX = Math.max(-maxTranslateX, Math.min(offsetX, maxTranslateX));
-            // Calculate rotation based on limited translation distance
-            let rotate = (translateX / maxTranslateX) * maxRotate;
-            card.style.transform = `translateX(${translateX}px) rotate(${rotate}deg)`;
-        }
+    const disableScroll = () => {
+        document.body.style.overflow = 'hidden'; // Disable scrolling
     };
 
-    const onEnd = async () => {
-        if (swipeProcessed) return; // Prevent further processing if already processed
+    const enableScroll = () => {
+        document.body.style.overflow = ''; // Enable scrolling
+    };
 
+    const onMove = (event) => {
+        if (!isDragging) return;
+        let currentX = event.type === 'mousemove' ? event.clientX : event.touches[0].clientX;
+        let currentY = event.type === 'mousemove' ? event.clientY : event.touches[0].clientY;
+
+        let deltaX = currentX - startX;
+        let deltaY = currentY - startY;
+        let rotation = deltaX * 20 / window.innerWidth; // Rotation degree depending on swipe length
+
+        card.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${rotation}deg)`;
+    };
+
+    const onEnd = (event) => {
+        isDragging = false;
+        enableScroll(); // Re-enable scrolling when the swipe ends
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onEnd);
         document.removeEventListener('touchmove', onMove);
         document.removeEventListener('touchend', onEnd);
 
-        const translateX = offsetX;
-        const direction = translateX > 0 ? 'right' : 'left';
+        const translateX = parseInt(card.style.transform.split('(')[1]);
+        const threshold = window.innerWidth * 0.3; // Threshold to consider the swipe as valid
 
         if (Math.abs(translateX) > threshold) {
-            // Apply the final swipe action
-            if (card) {
-                card.style.transition = 'transform 0.5s ease';
-                card.style.transform = `translateX(${direction === 'right' ? '100%' : '-100%'}) rotate(${(direction === 'right' ? maxRotate : -maxRotate)}deg)`;
-                await dotNetHelper.invokeMethodAsync('OnSwipeDetected', direction);
-                swipeProcessed = true; // Mark swipe as processed
-            }
+            let direction = translateX > 0 ? 'right' : 'left';
+            card.style.transition = 'transform 0.5s ease-in';
+            card.style.transform = `translateX(${direction === 'right' ? 1500 : -1500}px) rotate(${direction === 'right' ? 30 : -30}deg)`;
+            setTimeout(() => {
+                dotNetHelper.invokeMethodAsync('OnSwipeDetected', direction);
+            }, 500);
         } else {
-            // Reset the card position
-            if (card) {
-                card.style.transition = 'transform 0.5s ease';
-                card.style.transform = 'translateX(0px) rotate(0deg)';
-            }
+            // Spring back to the original position
+            card.style.transition = 'transform 0.5s ease-out';
+            card.style.transform = 'translate(0px, 0px) rotate(0deg)';
         }
     };
 
     const onStart = (event) => {
-        swipeProcessed = false; // Reset the flag on new swipe start
-        if (event.type === 'mousedown') {
-            startX = event.clientX;
-        } else if (event.type === 'touchstart') {
-            startX = event.touches[0].clientX;
-        }
-        currentX = startX;
-        if (card) {
-            card.style.transition = 'none';
-        }
+        isDragging = true;
+        disableScroll(); // Disable scrolling when swipe starts
+        startX = event.type === 'mousedown' ? event.clientX : event.touches[0].clientX;
+        startY = event.type === 'mousedown' ? event.clientY : event.touches[0].clientY;
+        card.style.transition = 'none'; // Remove transition to follow the cursor in real time
+
         document.addEventListener('mousemove', onMove);
         document.addEventListener('mouseup', onEnd);
         document.addEventListener('touchmove', onMove);

@@ -3,36 +3,22 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IInvitationService InvitationService
 @inject IDialogService DialogService
+@inject IDateDecisionService DateDecisionService
 
+<MudContainer MaxWidth="MaxWidth.Small" Class="px-2">
+    @if (Cards != null && Cards.Any())
+    {
+        <SwipeCard Cards="Cards"></SwipeCard>
+    }
+    else
+    {
+        <MudText Typo="Typo.h5" GutterBottom="true">Loading date ideas...</MudText>
+    }
+    </MudContainer>
 
-<MudContainer MaxWidth="MaxWidth.Medium">
-    <AuthorizeView>
-        <Authorized>
-            @if (isInCouple == null)
-            {
-                <MudContainer Class="d-flex justify-content-center align-content-center" MaxWidth="MaxWidth.Medium"> 
-                    <MudProgressCircular Indeterminate="true" />
-                </MudContainer>
-                
-            }
-            else if (isInCouple == true)
-            {
-                <DateIdeas></DateIdeas>
-            }
-            else
-            {
-                <MudText Typo="Typo.h6">You are not part of a couple yet. Invite your partner to get started!</MudText>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenInvitePartnerDialog">Invite Your Partner</MudButton>
-            }
-        </Authorized>
-        <NotAuthorized>
-            <UserLogin></UserLogin>
-        </NotAuthorized>
-    </AuthorizeView>
-</MudContainer>
-
-@code {
+    @code {
     private bool? isInCouple;
+    private List<SwipeCardModel> Cards;
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,9 +34,23 @@
             }
             else
             {
-                // Handle the case where the response was not successful
                 isInCouple = false;
             }
+
+            await FetchDateIdeas();
+        }
+    }
+
+    private async Task FetchDateIdeas()
+    {
+        var dateIdeasResponse = await DateDecisionService.GetDateIdeasAsync();
+        if (dateIdeasResponse.Success && dateIdeasResponse.Data != null)
+        {
+            Cards = dateIdeasResponse.Data.Select(idea => new SwipeCardModel
+                {
+                    DateIdea = idea,
+                    Id = idea.Id
+                }).ToList();
         }
     }
 

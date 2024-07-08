@@ -1,0 +1,31 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@MyCustomTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column justify-content-center align-content-space-around gap-15 h-100 vh-100">
+    @Body
+</MudContainer>
+
+@code {
+    MudTheme MyCustomTheme = new MudTheme()
+        {
+            Palette = new Palette()
+            {
+                Background = "#161616",
+                AppbarBackground = "#1D1E20",
+                TextPrimary = "#FFFFFF", // White color for the text and icons
+                TextSecondary = "#515151",
+                    Primary = "#D42163",
+                Error = "#DC143C"
+            },
+            Typography = new Typography()
+            {
+                Default = new Default()
+                {
+                    FontFamily = new[] { "Jost", "Helvetica", "Arial", "sans-serif" },
+                }
+            }
+        };
+}

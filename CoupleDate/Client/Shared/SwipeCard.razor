@@ -1,25 +1,32 @@
 ﻿@page "/swipecard"
 @implements IDisposable
 
+
 <div class="card-stack">
-    @foreach (var card in Cards)
+    @foreach(var card in Cards)
     {
-        <div @key="card.Id" @ref="card.ElementRef" class="card" @onmousedown="(e) => HandleMouseDown(e, card)" style="@(card.IsVisible ? "" : "display:none;")">
-            <div class="content">
-                @card.Content
-            </div>
+        <div @ref="card.ElementRef" class="stack-card">
+            <MudCard Elevation="5" Style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                <div style="position: relative; width: 100%; height: 65%;">
+                    <MudCardMedia Image="@card.DateIdea.ImageUrl" Style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" />
+                </div>
+                <MudCardContent Style="height: 35%; background-color: #1D1E20">
+                    <MudText Typo="Typo.h6">@card.DateIdea.Title</MudText>
+                    <MudText>@card.DateIdea.Description</MudText>
+                </MudCardContent>
+            </MudCard>
         </div>
     }
 </div>
 
+<!-- Adjusted the bottom padding and possibly reduce the size of icons if needed -->
+<div Class="d-flex justify-content-around pb-2" style="width: 100%;">
+    <MudIconButton Icon="@Icons.Filled.CheckCircle" Color="Color.Primary" Size="Size.Medium" />
+    <MudIconButton Icon="@Icons.Filled.Cancel" Color="Color.Secondary" Size="Size.Medium" />
+</div>
+
 @code {
-    public class SwipeCardModel
-    {
-        public int Id { get; set; }
-        public RenderFragment Content { get; set; }
-        public ElementReference ElementRef { get; set; }
-        public bool IsVisible { get; set; } = true;
-    }
+
 
     [Parameter]
     public List<SwipeCardModel> Cards { get; set; }

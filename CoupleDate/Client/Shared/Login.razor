@@ -1,19 +1,21 @@
-﻿@page "/login"
-@inject IAuthService AuthService
+﻿@inject IAuthService AuthService
 @inject ILocalStorageService LocalStorageService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
 
-    <MudForm @ref="form" Class="ma-4">
-        <MudTextField T="string" Label="Email" @bind-Value="loginModel.Email" Required="true" RequiredError="Email is required!"
+<MudPaper Style="background-color: var(--dark-bubble); color: var(--mud-palette-text-secondary);" Class="pa-3">
+    <MudForm @ref="form" Class="ma-4" >
+        <MudTextField T="string" Label="Email" @bind-Value="loginModel.Email" Required="true" RequiredError="Email is required!" Variant="Variant.Outlined"
                       Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" />
-        <MudTextField T="string" Label="Password" @bind-Value="loginModel.Password" HelperText="Choose a strong password" InputType="InputType.Password"
+        <MudTextField T="string" Label="Password" @bind-Value="loginModel.Password" HelperText="Choose a strong password" InputType="InputType.Password" Variant="Variant.Outlined"
                       Required="true" RequiredError="Password is required!" />
     </MudForm>
     <div class="d-flex flex-column gap-2 py-8">
     <MudButton Variant="Variant.Filled" Style="background-color: var(--crimson); color: var(--mud-palette-primary-text)" DisableElevation="true" OnClick="@(()=>HandleLogin())">Sign In</MudButton>
         @*<MudButton Variant="Variant.Outlined" Style="background-color: var(--mud-palette-white)" DisableElevation="true" OnClick="@(() => SetCurrentMode("Create Account"))">Create Account</MudButton>*@
     </div>
+</MudPaper>
 
 @code {
     private UserLogin loginModel = new UserLogin();
@@ -26,6 +28,8 @@
         {
             await LocalStorageService.SetItemAsync("authToken", result.Data);
             await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            Snackbar.Add("You are logged in!", Severity.Success);
+            NavigationManager.NavigateTo("/");
         }
         else
         {

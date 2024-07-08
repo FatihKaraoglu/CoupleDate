@@ -4,33 +4,22 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-
-
-
-<MudLayout>
-    <AuthorizeView>
-        <Authorized>
-            <MudAppBar Class="d-flex justify-content-center align-items-center" Elevation="0" Style="background-color: #161616">
-                <MudText>
-                    CoupleSwipe
-                </MudText>
-            </MudAppBar>
-            <MudAppBar Bottom="true" Class="d-flex flex-row justify-content-evenly">
-                <MudIconButton Icon="@Icons.Material.Filled.Favorite" aria-label="date-ideas" Style="color: var(--french-gray);" Href="/">
-                </MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.Person" aria-label="settings" Style="color: var(--french-gray);" Href="/settings">
-                </MudIconButton>
-            </MudAppBar>
-            <MudMainContent>
-                @Body
-            </MudMainContent>
-        </Authorized>
-        <NotAuthorized>
-            <CoupleDate.Client.Pages.StartPage>
-
-            </CoupleDate.Client.Pages.StartPage>
-        </NotAuthorized>
-    </AuthorizeView>
+<MudLayout Class="d-flex">
+    <MudAppBar Class="d-flex justify-content-center align-items-center" Elevation="0" Style="background-color: #161616">
+        <MudText>
+            CoupleSwipe
+        </MudText>
+    </MudAppBar>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+    <MudAppBar Bottom="true" Class="d-flex flex-row justify-content-evenly">
+        <MudIconButton Icon="@Icons.Material.Filled.Favorite" aria-label="date-ideas" Style="color: var(--french-gray);" Href="/">
+        </MudIconButton>
+        <MudIconButton Icon="@Icons.Material.Filled.Person" aria-label="settings" Style="color: var(--french-gray);" Href="/settings">
+        </MudIconButton>
+    </MudAppBar>
+   
 </MudLayout>
 
 @code {
@@ -38,11 +27,12 @@
         {
             Palette = new Palette()
             {
-                Background = "#161616", 
-                
-                AppbarBackground = "#1D1E20", 
+                Background = "#161616",
+                AppbarBackground = "#1D1E20",
                 TextPrimary = "#FFFFFF", // White color for the text and icons
                 TextSecondary = "#515151",
+                Primary = "#D42163",
+                Error = "#DC143C"
             },
             Typography = new Typography()
             {

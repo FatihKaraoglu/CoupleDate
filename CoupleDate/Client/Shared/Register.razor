@@ -1,16 +1,15 @@
-﻿@page "/register"
-@inject IAuthService AuthService
+﻿@inject IAuthService AuthService
 @inject ILocalStorageService LocalStorageService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
 
-<MudPaper Style="background-color: var(--dark-bubble); color: var(--mud-palette-text-secondary);">
+<MudPaper Style="background-color: var(--dark-bubble); color: var(--mud-palette-text-secondary);" Class="pa-3">
     <MudForm @ref="form" Class="ma-4">
-        <MudTextField T="string" Label="Email" @bind-Value="registerModel.Email" Required="true" RequiredError="Email is required!"
+        <MudTextField T="string" Label="Email" @bind-Value="registerModel.Email" Required="true" RequiredError="Email is required!" AdornmentColor="Color.Tertiary" Variant="Variant.Outlined" G
                       Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" />
-        <MudTextField T="string" Label="Password" @bind-Value="registerModel.Password" HelperText="Choose a strong password" InputType="InputType.Password"
+        <MudTextField T="string" Label="Password" @bind-Value="registerModel.Password" HelperText="Choose a strong password" InputType="InputType.Password" Variant="Variant.Outlined"
                       Required="true" RequiredError="Password is required!" />
-        <MudTextField T="string" Label="Repeat Password" @bind-Value="registerModel.ConfirmPassword" HelperText="Repeat the password" InputType="InputType.Password"
+        <MudTextField T="string" Label="Repeat Password" @bind-Value="registerModel.ConfirmPassword" HelperText="Repeat the password" InputType="InputType.Password" Variant="Variant.Outlined"
                       Required="true" RequiredError="Password is required!" />
     </MudForm>
     <div class="d-flex flex-column gap-2 py-8 justify-center">
