@@ -1,16 +1,17 @@
 ﻿@page "/swipecard"
 @implements IDisposable
+@inject IDateDecisionService DateDecisionService
 
 
 <div class="card-stack">
-    @foreach(var card in Cards)
+    @foreach (var card in Cards)
     {
         <div @ref="card.ElementRef" class="stack-card">
-            <MudCard Elevation="5" Style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+            <MudCard Elevation="5" Style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius-stack) ">
                 <div style="position: relative; width: 100%; height: 65%;">
-                    <MudCardMedia Image="@card.DateIdea.ImageUrl" Style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;" />
+                    <MudCardMedia Image="@card.DateIdea.ImageUrl" Style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-top-right-radius: var(--border-radius-card); border-top-left-radius: var(--border-radius-card)" />
                 </div>
-                <MudCardContent Style="height: 35%; background-color: #1D1E20">
+                <MudCardContent Style="height: 35%; background-color: #1D1E20; border-bottom-left-radius: var(--border-radius-card); border-bottom-right-radius: var(--border-radius-card)">
                     <MudText Typo="Typo.h6">@card.DateIdea.Title</MudText>
                     <MudText>@card.DateIdea.Description</MudText>
                 </MudCardContent>
@@ -20,9 +21,9 @@
 </div>
 
 <!-- Adjusted the bottom padding and possibly reduce the size of icons if needed -->
-<div Class="d-flex justify-content-around pb-2" style="width: 100%;">
-    <MudIconButton Icon="@Icons.Outlined.CheckCircle" Color="Color.Primary" Size="Size.Large" />
-    <MudIconButton Icon="@Icons.Outlined.Cancel" Color="Color.Secondary" Size="Size.Large" />
+<div Class="d-flex justify-content-center pa-4" style="width: 100%;">
+    <MudIconButton Icon="@Icons.Material.Rounded.CheckCircleOutline" Size="Size.Large" Style="color: #00FF00;" />
+    <MudIconButton Icon="@Icons.Material.Outlined.Cancel" Size="Size.Large" Style="color: #FF0000;" />
 </div>
 
 @code {
@@ -64,6 +65,12 @@
             Console.WriteLine($"Card {swipedCard.Id} swiped {direction}");
             await OnSwiped.InvokeAsync(direction);
 
+            var swipeRequest = new SwipeRequest()
+                {
+                    DateId = swipedCard.Id,
+                    Liked = (direction == "right") ? true : false
+                };
+            await DateDecisionService.SwipeAsync(swipeRequest);
             // Set visibility to false instead of removing the card from DOM directly
             swipedCard.IsVisible = false;
             Cards.Remove(swipedCard);

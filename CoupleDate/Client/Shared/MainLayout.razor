@@ -13,22 +13,36 @@
     <MudMainContent>
         @Body
     </MudMainContent>
-    <MudAppBar Bottom="true" Class="d-flex flex-row justify-content-evenly">
-        <MudIconButton Icon="@Icons.Material.Filled.Favorite" aria-label="date-ideas" Style="color: var(--french-gray);" Href="/">
-        </MudIconButton>
-        <MudIconButton Icon="@Icons.Material.Filled.Person" aria-label="settings" Style="color: var(--french-gray);" Href="/settings">
-        </MudIconButton>
+    <MudAppBar Bottom="true" Class="d-flex flex-row justify-content-evenly gap-6">
+        <AppBarItem Icon="@Icons.Material.Outlined.Person" Href="/" ItemTitle="Profile"/>
+        <AppBarItem Icon="@Icons.Material.Outlined.Home" Href="/" ItemTitle="Home"/>
+        <AppBarItemButton Icon="@Icons.Material.Outlined.Settings" ItemTitle="Settings" OnClick="OpenDrawerSettings" />
     </MudAppBar>
+
+    <MudDrawer @bind-Open="@_open" Anchor="@Anchor.Bottom" Elevation="1" Variant="@DrawerVariant.Temporary" Height="90%" Style="background-color: ">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6" Style="color: white">Settings</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <MudNavLink Icon=@Icons.Material.Outlined.Person Class="border-bottom-settings">Account Information</MudNavLink>
+            <MudNavLink Icon=@Icons.Material.Outlined.Payment Class="border-bottom-settings">Payment Methods</MudNavLink>
+            <MudNavLink Icon=@Icons.Material.Outlined.Favorite Class="border-bottom-settings">Relationship</MudNavLink>
+
+        </MudNavMenu>
+    </MudDrawer>
    
 </MudLayout>
 
 @code {
+    private bool _open;
+
     MudTheme MyCustomTheme = new MudTheme()
         {
             Palette = new Palette()
             {
                 Background = "#161616",
                 AppbarBackground = "#1D1E20",
+                DrawerBackground = "#1D1E20",
                 TextPrimary = "#FFFFFF", // White color for the text and icons
                 TextSecondary = "#515151",
                 Primary = "#D42163",
@@ -42,4 +56,9 @@
                 }
             }
         };
+
+    private void OpenDrawerSettings()
+    {
+        _open = true;
+    }
 }

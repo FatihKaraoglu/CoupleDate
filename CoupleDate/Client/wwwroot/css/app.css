@@ -63,6 +63,11 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
+:root{
+    --border-radius-card: 32px;
+    --border-radius-stack: 36px;
+}
+
 .card-container {
     display: flex;
     justify-content: center;
@@ -141,9 +146,20 @@ a, .btn-link {
     will-change: transform; /* Optimizes animations */
 }
 
+.border-bottom-settings{
+    border-bottom: solid 2px;
+}
 
 
+.mud-navmenu.mud-navmenu-default .mud-nav-link.active:not(.mud-nav-link-disabled) {
+    color: white !important;
+    background-color: #1D1E20!important;
+}
 
+
+.mud-navmenu.mud-navmenu-default .mud-nav-link.active:not(.mud-nav-link-disabled):hover {
+    background-color: var(--hover-black) !important;
+}
 
 @media (hover: hover) and (pointer: fine) {
     .mud-input.mud-input-outlined:not(.mud-disabled):not(:focus-within):hover .mud-input-outlined-border {

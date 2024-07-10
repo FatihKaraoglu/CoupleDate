@@ -1,0 +1,21 @@
+﻿<div class="d-flex flex-column align-items-center justify-content-center">
+    <MudIconButton Icon="@Icon" aria-label="date-ideas" Style="color: var(--french-gray); margin-bottom: -6px" Href="@Href"  >
+    </MudIconButton>
+
+    <MudText Typo="Typo.body2">
+        @ItemTitle
+    </MudText>
+
+</div>
+
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Href { get; set; } = string.Empty;
+
+    [Parameter]
+    public string ItemTitle { get; set; } = string.Empty;
+}
