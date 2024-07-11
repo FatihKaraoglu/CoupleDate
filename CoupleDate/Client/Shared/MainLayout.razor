@@ -19,9 +19,12 @@
         <AppBarItemButton Icon="@Icons.Material.Outlined.Settings" ItemTitle="Settings" OnClick="OpenDrawerSettings" />
     </MudAppBar>
 
-    <MudDrawer @bind-Open="@_open" Anchor="@Anchor.Bottom" Elevation="1" Variant="@DrawerVariant.Temporary" Height="90%" Style="background-color: ">
-        <MudDrawerHeader>
+    <MudDrawer @bind-Open="@_open" Anchor="@Anchor.Bottom" Elevation="1" Variant="@DrawerVariant.Temporary" Height="90%" >
+        <MudDrawerHeader Class="d-flex flex-row justify-content-between">
             <MudText Typo="Typo.h6" Style="color: white">Settings</MudText>
+            <MudIconButton Class="transition icon-button" Style="color: white" Icon="@Icons.Rounded.Cancel" OnClick="CloseDrawerSettings">
+
+            </MudIconButton>
         </MudDrawerHeader>
         <MudNavMenu>
             <MudNavLink Icon=@Icons.Material.Outlined.Person Class="border-bottom-settings">Account Information</MudNavLink>
@@ -60,5 +63,10 @@
     private void OpenDrawerSettings()
     {
         _open = true;
+    }
+
+    private void CloseDrawerSettings()
+    {
+        _open = false;
     }
 }

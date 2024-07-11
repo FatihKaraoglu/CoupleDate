@@ -161,6 +161,46 @@ a, .btn-link {
     background-color: var(--hover-black) !important;
 }
 
+.inner-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+.avatar {
+    height: 140px !important;
+    width: 140px !important;
+    font-size: 2rem !important;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.avatar-inner{
+    height: 90%!important;
+    width: 90%!important;
+}
+
+.avatar-inner-badge {
+    height: 50% !important;
+    width: 50% !important;
+    font-size: 1rem !important;
+}
+
+.avatar:hover {
+    transform: scale(1.1);
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.icon-button:hover {
+    transform: scale(1.1);
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.icon-button {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
 @media (hover: hover) and (pointer: fine) {
     .mud-input.mud-input-outlined:not(.mud-disabled):not(:focus-within):hover .mud-input-outlined-border {
         border-color: #D42163!important;
