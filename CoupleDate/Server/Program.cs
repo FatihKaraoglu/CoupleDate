@@ -8,6 +8,7 @@ using CoupleDate.Server.Services.DateIdeaService;
 using CoupleDate.Server.Services.MatchService;
 using Microsoft.EntityFrameworkCore;
 using CoupleDate.Server.Services.AuthService;
+using CoupleDate.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSignalR();
+
+
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -128,9 +131,9 @@ app.UseSwaggerUI(c =>
 });
 
 app.MapControllers();
-app.MapRazorPages();
-app.MapFallbackToFile("index.html");
+app.UseRouting();
 app.MapBlazorHub();
+app.MapFallbackToFile("index.html");
 app.MapHub<DateIdeasHub>("/dateIdeasHub");
 
 app.Run();

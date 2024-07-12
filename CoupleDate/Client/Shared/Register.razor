@@ -3,7 +3,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
 
-<MudPaper Style="background-color: var(--dark-bubble); color: var(--mud-palette-text-secondary);" Class="pa-3">
+<MudPaper Class="pa-3">
     <MudForm @ref="form" Class="ma-4">
         <MudTextField T="string" Label="Email" @bind-Value="registerModel.Email" Required="true" RequiredError="Email is required!" AdornmentColor="Color.Tertiary" Variant="Variant.Outlined" G
                       Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" />
@@ -13,7 +13,7 @@
                       Required="true" RequiredError="Password is required!" />
     </MudForm>
     <div class="d-flex flex-column gap-2 py-8 justify-center">
-        <MudButton Variant="Variant.Filled" Style="background-color: var(--mint); color: var(--mud-palette-primary-text)" DisableElevation="true" OnClick="@(()=>HandleRegistration())">Sign Up</MudButton>
+        <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=>HandleRegistration())">Sign Up</MudButton>
     </div>
 </MudPaper>
 

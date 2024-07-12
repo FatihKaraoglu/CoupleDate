@@ -4,7 +4,7 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 
-<MudPaper Style="background-color: var(--dark-bubble); color: var(--mud-palette-text-secondary);" Class="pa-3">
+<MudPaper Class="pa-3">
     <MudForm @ref="form" Class="ma-4" >
         <MudTextField T="string" Label="Email" @bind-Value="loginModel.Email" Required="true" RequiredError="Email is required!" Variant="Variant.Outlined"
                       Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" />
@@ -12,8 +12,7 @@
                       Required="true" RequiredError="Password is required!" />
     </MudForm>
     <div class="d-flex flex-column gap-2 py-8">
-    <MudButton Variant="Variant.Filled" Style="background-color: var(--crimson); color: var(--mud-palette-primary-text)" DisableElevation="true" OnClick="@(()=>HandleLogin())">Sign In</MudButton>
-        @*<MudButton Variant="Variant.Outlined" Style="background-color: var(--mud-palette-white)" DisableElevation="true" OnClick="@(() => SetCurrentMode("Create Account"))">Create Account</MudButton>*@
+    <MudButton Variant="Variant.Filled" DisableElevation="true" OnClick="@(()=>HandleLogin())">Sign In</MudButton>
     </div>
 </MudPaper>
 

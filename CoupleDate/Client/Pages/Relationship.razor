@@ -1,4 +1,8 @@
 ﻿@page "/relationship"
+@inject IJSRuntime JS
+@inject ISnackbar Snackbar
+@inject IInvitationService InvitationService
+
 <MudContainer MaxWidth="MaxWidth.Small" Class="mt-4">
     <div class="d-flex flex-row justify-content-around">
         <MudAvatar Class="avatar">
@@ -6,15 +10,85 @@
         </MudAvatar>
 
         <MudAvatar Variant="Variant.Outlined" Class="position-relative avatar">
-            <MudIcon Class="position-relative avatar-inner" Icon="@Icons.Outlined.Favorite" >
+            <MudIcon Class="position-relative avatar-inner" Icon="@Icons.Material.Outlined.Favorite" >
 
             </MudIcon>
-            <MudIcon Class="inner-icon avatar-inner-badge" Style="color: black" Icon="@Icons.Outlined.QuestionMark">
+            <MudIcon Class="inner-icon avatar-inner-badge" Style="color: black" Icon="@Icons.Material.Outlined.QuestionMark" @onclick="OpenInvitation">
 
             </MudIcon>
         </MudAvatar>
     </div>
+
+    <MudDrawer @bind-Open="@_open" Anchor="@Anchor.Bottom" Elevation="1" Variant="@DrawerVariant.Temporary" Height="90%">
+        <MudDrawerHeader Class="d-flex flex-row justify-content-between">
+            <MudText Typo="Typo.h6" Style="color: white">Invitation</MudText>
+            <MudIconButton Class="transition icon-button" Style="color: white" Icon="@Icons.Material.Rounded.Cancel" OnClick="CloseInvitation"></MudIconButton>
+        </MudDrawerHeader>
+
+        <MudContainer MaxWidth="MaxWidth.ExtraSmall">
+            <div class="d-flex justify-content-center my-2">
+                @foreach (var method in new[] { Icons.Custom.Brands.WhatsApp, Icons.Custom.Brands.Gmail, Icons.Custom.Brands.Discord, Icons.Custom.Brands.X, Icons.Custom.Brands.TikTok, Icons.Custom.Brands.Facebook })
+                {
+                    <MudIconButton Icon=@method Size="Size.Large" @onclick="() => UpdateInvitationLink(method)"></MudIconButton>
+                }
+            </div>
+
+            <div class="d-flex align-items-center">
+                <MudTextField @bind-Value="invitationLink"
+                              ReadOnly="true"
+                              AdornmentIcon="@Icons.Material.Filled.ContentCopy"
+                              AdornmentColor="Color.Primary"
+                              Adornment="Adornment.End"
+                              OnAdornmentClick="CopyLinkToClipboard"
+                              Label="Invitation Link"
+                              FullWidth="true" />
+
+
+            </div>
+        </MudContainer>
+    </MudDrawer>
 </MudContainer>
 @code {
+    public bool _open { get; set; }
+    private ElementReference CopyTextField;
 
+    protected async Task OnInitializedAsync()
+    {
+        await UpdateInvitationLink("");
+    }
+
+    private void OpenInvitation()
+    {
+        _open = true;
+    }
+
+    private void CloseInvitation()
+    {
+        _open = false;
+    }
+
+    private string invitationLink = "https://example.com/invite?code=youruniquecode"; // Example link
+
+    private void CopyLinkToClipboard()
+    {
+        // JS interop to copy the link to the clipboard
+        JS.InvokeVoidAsync("navigator.clipboard.writeText", invitationLink);
+        Snackbar.Add("Link copied to clipboard!", Severity.Success);
+    }
+
+    private string GetIconName(string method) => $"@Icons.Custom.Brands.{method}";
+
+    private async Task UpdateInvitationLink(string method)
+    {
+        var result = await InvitationService.GenerateInvitationLinkAsync();
+        if (result.Success)
+        {
+            invitationLink = result.Data; // Update the link based on the method if needed
+        }
+        else
+        {
+            Console.WriteLine("Failed to generate link: " + result.Message);
+        }
+        StateHasChanged();
+    }
 }

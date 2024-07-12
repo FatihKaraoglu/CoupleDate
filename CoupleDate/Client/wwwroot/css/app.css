@@ -109,10 +109,6 @@ a, .btn-link {
     text-align: center;
 }
 
-.mud-tabs .mud-tabs-toolbar {
-    background-color: #161616;
-}
-
 .mud-tab.mud-tab-active {
     color: white !important;
 }
@@ -195,10 +191,16 @@ a, .btn-link {
 .icon-button:hover {
     transform: scale(1.1);
     background-color: rgba(0, 0, 0, 0.1);
+    
 }
 
 .icon-button {
     transition: transform 0.3s ease, background-color 0.3s ease;
+    color: white !important;
+}
+
+.mud-input-adornment {
+    z-index: 1; /* Ensure it is clickable by bringing it to the front */
 }
 
 @media (hover: hover) and (pointer: fine) {
