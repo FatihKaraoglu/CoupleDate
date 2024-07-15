@@ -6,30 +6,26 @@
 <MudContainer MaxWidth="MaxWidth.Small" Class="mt-4">
     <div class="d-flex flex-row justify-content-around">
         <MudAvatar Class="avatar">
-            <MudImage Src="userProfiles\zulmaury-saavedra-kXC0dbqtRe4-unsplash.jpg"></MudImage>
+            <MudImage Src="userProfiles/zulmaury-saavedra-kXC0dbqtRe4-unsplash.jpg"></MudImage>
         </MudAvatar>
 
         <MudAvatar Variant="Variant.Outlined" Class="position-relative avatar">
-            <MudIcon Class="position-relative avatar-inner" Icon="@Icons.Material.Outlined.Favorite" >
-
-            </MudIcon>
-            <MudIcon Class="inner-icon avatar-inner-badge" Style="color: black" Icon="@Icons.Material.Outlined.QuestionMark" @onclick="OpenInvitation">
-
-            </MudIcon>
+            <MudIcon Class="position-relative avatar-inner" Icon="@Icons.Material.Outlined.Favorite"></MudIcon>
+            <MudIcon Class="inner-icon avatar-inner-badge" Color="Color.Primary" Icon="@Icons.Material.Outlined.QuestionMark" @onclick="OpenInvitation"></MudIcon>
         </MudAvatar>
     </div>
 
     <MudDrawer @bind-Open="@_open" Anchor="@Anchor.Bottom" Elevation="1" Variant="@DrawerVariant.Temporary" Height="90%">
         <MudDrawerHeader Class="d-flex flex-row justify-content-between">
-            <MudText Typo="Typo.h6" Style="color: white">Invitation</MudText>
-            <MudIconButton Class="transition icon-button" Style="color: white" Icon="@Icons.Material.Rounded.Cancel" OnClick="CloseInvitation"></MudIconButton>
+            <MudText Typo="Typo.h6">Invitation</MudText>
+            <MudIconButton Class="transition icon-button" Color="Color.Primary" Icon="@Icons.Material.Rounded.Cancel" OnClick="CloseInvitation"></MudIconButton>
         </MudDrawerHeader>
 
         <MudContainer MaxWidth="MaxWidth.ExtraSmall">
             <div class="d-flex justify-content-center my-2">
                 @foreach (var method in new[] { Icons.Custom.Brands.WhatsApp, Icons.Custom.Brands.Gmail, Icons.Custom.Brands.Discord, Icons.Custom.Brands.X, Icons.Custom.Brands.TikTok, Icons.Custom.Brands.Facebook })
                 {
-                    <MudIconButton Icon=@method Size="Size.Large" @onclick="() => UpdateInvitationLink(method)"></MudIconButton>
+                    <MudIconButton Icon=@method Size="Size.Large" @onclick="() => ShareLink(method)"></MudIconButton>
                 }
             </div>
 
@@ -42,19 +38,19 @@
                               OnAdornmentClick="CopyLinkToClipboard"
                               Label="Invitation Link"
                               FullWidth="true" />
-
-
             </div>
         </MudContainer>
     </MudDrawer>
 </MudContainer>
+
 @code {
     public bool _open { get; set; }
     private ElementReference CopyTextField;
+    private string invitationLink = "https://example.com/invite?code=youruniquecode"; // Example link
 
-    protected async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await UpdateInvitationLink("");
+        await UpdateInvitationLink();
     }
 
     private void OpenInvitation()
@@ -67,8 +63,6 @@
         _open = false;
     }
 
-    private string invitationLink = "https://example.com/invite?code=youruniquecode"; // Example link
-
     private void CopyLinkToClipboard()
     {
         // JS interop to copy the link to the clipboard
@@ -76,9 +70,7 @@
         Snackbar.Add("Link copied to clipboard!", Severity.Success);
     }
 
-    private string GetIconName(string method) => $"@Icons.Custom.Brands.{method}";
-
-    private async Task UpdateInvitationLink(string method)
+    private async Task UpdateInvitationLink()
     {
         var result = await InvitationService.GenerateInvitationLinkAsync();
         if (result.Success)
@@ -90,5 +82,36 @@
             Console.WriteLine("Failed to generate link: " + result.Message);
         }
         StateHasChanged();
+    }
+
+    private async Task ShareLink(string method)
+    {
+        var url = string.Empty;
+        var encodedLink = Uri.EscapeDataString(invitationLink);
+        switch (method)
+        {
+            case Icons.Custom.Brands.WhatsApp:
+                url = $"https://wa.me/?text={encodedLink}";
+                break;
+            case Icons.Custom.Brands.Facebook:
+                url = $"https://www.facebook.com/sharer/sharer.php?u={encodedLink}";
+                break;
+            case Icons.Custom.Brands.X:
+                url = $"https://twitter.com/intent/tweet?url={encodedLink}";
+                break;
+            case Icons.Custom.Brands.Gmail:
+                url = $"mailto:?body={encodedLink}";
+                break;
+            case Icons.Custom.Brands.Discord:
+                url = $"https://discord.com/channels/@me?url={encodedLink}";
+                break;
+            case Icons.Custom.Brands.TikTok:
+                url = $"https://www.tiktok.com/share?url={encodedLink}";
+                break;
+        }
+        if (!string.IsNullOrEmpty(url))
+        {
+            await JS.InvokeVoidAsync("open", url, "_blank");
+        }
     }
 }

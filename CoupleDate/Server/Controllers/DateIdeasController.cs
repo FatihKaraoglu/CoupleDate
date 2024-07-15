@@ -1,6 +1,7 @@
 ﻿using CoupleDate.Server.Data.DataContext;
 using CoupleDate.Server.Services.DateIdeaService;
 using CoupleDate.Shared;
+using CoupleDate.Shared.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ namespace CoupleDate.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<DateIdea>>>> GetDateIdeas()
+        public async Task<ActionResult<ServiceResponse<List<DateIdeaDTO>>>> GetDateIdeas()
         {
             var response = await _dateIdeaService.GetDateIdeasAsync();
             return Ok(response);

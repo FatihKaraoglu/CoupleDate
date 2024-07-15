@@ -2,29 +2,39 @@
 @implements IDisposable
 @inject IDateDecisionService DateDecisionService
 
-
-<div class="card-stack">
-    @foreach (var card in Cards)
-    {
-        <div @ref="card.ElementRef" class="stack-card">
-            <MudCard Elevation="5" Style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius-stack) ">
-                <div style="position: relative; width: 100%; height: 65%;">
-                    <MudCardMedia Image="@card.DateIdea.ImageUrl" Style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-top-right-radius: var(--border-radius-card); border-top-left-radius: var(--border-radius-card)" />
-                </div>
-                <MudCardContent Style="height: 35%; background-color: #1D1E20; border-bottom-left-radius: var(--border-radius-card); border-bottom-right-radius: var(--border-radius-card)">
-                    <MudText Typo="Typo.h6">@card.DateIdea.Title</MudText>
-                    <MudText>@card.DateIdea.Description</MudText>
-                </MudCardContent>
-            </MudCard>
-        </div>
-    }
+<div class="card-stack-container text-center">
+    <div class="card-stack mx-auto">
+        @foreach (var card in Cards)
+        {
+            <div @ref="card.ElementRef" class="stack-card">
+                <MudCard Elevation="1" class="card-container">
+                    <div style="position: relative; width: 100%; height: auto;">
+                        <MudCardMedia Image="@card.DateIdea.ImageUrl" class="card-image" />
+                    </div>
+                    <MudCardContent class="card-content">
+                        <div class="d-flex justify-content-center flex-row ">
+                            @foreach (var category in @card.DateIdea.Categories)
+                            {
+                                <MudChip T="string" Color="Color.Primary">@category.Name</MudChip>
+                            }
+                        </div>
+                       
+                        <MudText Typo="Typo.h6">@card.DateIdea.Title</MudText>
+                        <MudText>@card.DateIdea.Description</MudText>
+                    </MudCardContent>
+                </MudCard>
+            </div>
+        }
+    </div>
 </div>
 
-<!-- Adjusted the bottom padding and possibly reduce the size of icons if needed -->
-<div Class="d-flex justify-content-center pa-4" style="width: 100%;">
-    <MudIconButton Icon="@Icons.Material.Rounded.CheckCircleOutline" Size="Size.Large" Style="color: #00FF00;" />
-    <MudIconButton Icon="@Icons.Material.Outlined.Cancel" Size="Size.Large" Style="color: #FF0000;" />
+<div class="buttons-container text-center mt-5">
+    <MudIconButton Icon="@Icons.Material.Rounded.CheckCircleOutline" Size="Size.Large" class="mud-icon-button" style="color: #00FF00;" />
+    <MudIconButton Icon="@Icons.Material.Outlined.Cancel" Size="Size.Large" class="mud-icon-button" style="color: #FF0000;" />
 </div>
+
+
+
 
 @code {
 

@@ -73,7 +73,7 @@ a, .btn-link {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    min-height: 100vh; /* Adjust as needed */
+    height: 100%;
     position: relative;
 }
 
@@ -127,20 +127,6 @@ a, .btn-link {
     height: 100%;
 }
 
-.card-stack {
-    position: relative;
-    width: 100%;
-    height: calc(100vh - 220px); /* Adjust based on your app's layout needs */
-}
-.stack-card {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.3s ease-out; /* Smooth transition */
-    will-change: transform; /* Optimizes animations */
-}
 
 .border-bottom-settings{
     border-bottom: solid 2px;
@@ -196,15 +182,70 @@ a, .btn-link {
 
 .icon-button {
     transition: transform 0.3s ease, background-color 0.3s ease;
-    color: white !important;
 }
 
 .mud-input-adornment {
-    z-index: 1; /* Ensure it is clickable by bringing it to the front */
+    z-index: 1; 
 }
 
-@media (hover: hover) and (pointer: fine) {
-    .mud-input.mud-input-outlined:not(.mud-disabled):not(:focus-within):hover .mud-input-outlined-border {
-        border-color: #D42163!important;
-    }
+.mud-nav-link-text:hover{
+    color: red;
 }
+
+.card-stack-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: calc(100vh - 220px); 
+}
+
+.card-stack {
+    position: relative;
+    width: 90%;
+    height: 100%;
+    max-width: 400px; 
+}
+
+.stack-card {
+    position: absolute; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    transition: transform 0.3s ease-out; /* Smooth transition */
+    will-change: transform; /* Optimizes animations */
+    height: 100%;
+}
+
+.card-container {
+    width: 100%; /* Ensure it takes full width of card-stack */
+    max-width: 400px; /* Limit the card width */
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 60px; /* Add margin to separate from buttons */
+}
+
+.card-image {
+    width: 100%;
+    height: auto;
+    max-height: 200px; /* Set a maximum height for the image */
+    object-fit: cover;
+}
+
+.card-content {
+    padding: 10px;
+    text-align: center;
+}
+
+
+.mud-icon-button {
+    margin: 0 10px;
+}
+
+
+    @media (hover: hover) and (pointer: fine) {
+        .mud-input.mud-input-outlined:not(.mud-disabled):not(:focus-within):hover .mud-input-outlined-border {
+            border-color: #D42163 !important;
+        }
+    }

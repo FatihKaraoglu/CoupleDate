@@ -16,6 +16,7 @@ namespace CoupleDate.Shared
         public string Role { get; set; } = "Free"; // Default role
         public bool IsSubscribed { get; set; } = false; // Default subscription status
         public int? CoupleId { get; set; } // Couple identifier
+        public string? ProfilePictureUrl { get; set; }
 
         // Navigation property to UserSwipes
         public List<UserSwipe> UserSwipes { get; set; }

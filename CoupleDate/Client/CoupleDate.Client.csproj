@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Services\ProfileService\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 

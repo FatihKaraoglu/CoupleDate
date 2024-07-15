@@ -1,6 +1,9 @@
 ﻿using CoupleDate.Shared.RequestObject;
 using CoupleDate.Shared;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using CoupleDate.Shared.DTO;
 
 namespace CoupleDate.Client.Services.DateDecisionService
 {
@@ -13,9 +16,14 @@ namespace CoupleDate.Client.Services.DateDecisionService
             _httpClient = httpClient;
         }
 
-        public async Task<ServiceResponse<List<DateIdea>>> GetDateIdeasAsync()
+        public async Task<ServiceResponse<List<DateIdeaDTO>>> GetDateIdeasAsync()
         {
-            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<DateIdea>>>("api/DateIdeas");
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve,
+                PropertyNameCaseInsensitive = true // Optional: Based on your API's JSON naming conventions
+            };
+            var response = await _httpClient.GetFromJsonAsync<ServiceResponse<List<DateIdeaDTO>>>("api/DateIdeas", options);
             return response;
         }
 

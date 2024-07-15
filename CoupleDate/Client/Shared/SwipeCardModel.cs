@@ -1,4 +1,5 @@
 ﻿using CoupleDate.Shared;
+using CoupleDate.Shared.DTO;
 using Microsoft.AspNetCore.Components;
 
 namespace CoupleDate.Client.Shared
@@ -9,6 +10,6 @@ namespace CoupleDate.Client.Shared
         public RenderFragment Content { get; set; }
         public ElementReference ElementRef { get; set; }
         public bool IsVisible { get; set; } = true;
-        public DateIdea DateIdea { get; set; }
+        public DateIdeaDTO DateIdea { get; set; }
     }
 }

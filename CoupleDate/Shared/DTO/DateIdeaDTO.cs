@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoupleDate.Shared
+namespace CoupleDate.Shared.DTO
 {
-    public class DateIdea
+    public class DateIdeaDTO
     {
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
-        public ICollection<DateIdeaCategory> DateIdeaCategories { get; set; }
+        public List<CategoryDto> Categories { get; set; }
     }
 }

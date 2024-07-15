@@ -1,6 +1,7 @@
 ﻿using CoupleDate.Server.Data.DataContext;
 using CoupleDate.Server.Services.AuthService;
 using CoupleDate.Shared;
+using CoupleDate.Shared.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoupleDate.Server.Services.DateIdeaService
@@ -16,9 +17,9 @@ namespace CoupleDate.Server.Services.DateIdeaService
             _authService = authService;
         }
 
-        public async Task<ServiceResponse<List<DateIdea>>> GetDateIdeasAsync()
+        public async Task<ServiceResponse<List<DateIdeaDTO>>> GetDateIdeasAsync()
         {
-            var response = new ServiceResponse<List<DateIdea>>();
+            var response = new ServiceResponse<List<DateIdeaDTO>>();
             var userId = _authService.GetUserId();
 
             try
@@ -30,9 +31,24 @@ namespace CoupleDate.Server.Services.DateIdeaService
 
                 var unswipedDateIdeas = await _context.DateIdeas
                     .Where(di => !swipedDateIds.Contains(di.Id))
-                    .ToListAsync();
+                    .Include(di => di.DateIdeaCategories)
+                        .ThenInclude(dic => dic.Category)
+                .ToListAsync();
 
-                response.Data = unswipedDateIdeas;
+                var dateIdeaDtos = unswipedDateIdeas.Select(di => new DateIdeaDTO
+                {
+                    Id = di.Id,
+                    Title = di.Title,
+                    Description = di.Description,
+                    ImageUrl = di.ImageUrl,
+                    Categories = di.DateIdeaCategories.Select(dic => new CategoryDto
+                    {
+                        Id = dic.Category.Id,
+                        Name = dic.Category.Name
+                    }).ToList()
+                }).ToList();
+
+                response.Data = dateIdeaDtos;
                 response.Success = true;
             }
             catch (Exception ex)
